@@ -31,19 +31,19 @@ def gem(id: int):
     return (gem_found)
 
 
-@app.post('/gems')
+@app.post('/gems',  response_model=Gem)
 def create_gem(gem_pr:GemProperties, gem:Gem):
     gem_properties = GemProperties(size=gem_pr.size, clarity=gem_pr.clarity,
                                    color=gem_pr.color)
     session.add(gem_properties)
     session.commit()
     gem_ = Gem(price=gem.price, available=gem.available, gem_properties=gem_properties,
-               gem_properties_id=gem_properties.id)
+               gem_properties_id=gem_properties.id,gem_type=gem.gem_type)
     price = calculate_gem_price(gem, gem_pr)
     gem_.price = price
     session.add(gem_)
     session.commit()
-    return (gem)
+    return (gem_)
 
 @app.put('/gems/{id}', response_model=Gem)
 def update_gem(id:int, gem:Gem):
